@@ -1,0 +1,31 @@
+# Android / Gradle / Kotlin
+.gradle/
+.kotlin/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+
+# Android Studio / IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Keystore & Secrets (API keys and signing keys must never be committed)
+*.jks
+*.keystore
+.env
+.env.*
+secrets.properties
+
+# Keep submission APKs inside apk/
+*.apk
+*.aab
+!apk/*.apk
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pleos Connect App Cover Spec: 144x144dp grid / 90x90dp safe zone (62.5% -> central 66x66dp of 108dp) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Highway perspective lanes (strictly within [28..80] safe zone for Hyundai/Kia/Genesis masking) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#5A6270"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:pathData="M43,32 L32,76" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#5A6270"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:pathData="M65,32 L76,76" />
+
+    <!-- ON:DO 36.5°C Warmth Solidarity Beacon Ring (#FF6B2C) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF6B2C"
+        android:strokeWidth="5.5"
+        android:pathData="M54,34A18,18 0 1,1 53.99,34Z" />
+
+    <!-- Inner Warmth Core -->
+    <path
+        android:fillColor="#FF6B2C"
+        android:pathData="M54,44A8,8 0 1,1 53.99,44Z" />
+
+    <!-- Pleos Informative Active (#00E074) Cross-Verified Signal Node -->
+    <path
+        android:fillColor="#00E074"
+        android:pathData="M68,36A5,5 0 1,1 67.99,36Z" />
+</vector>

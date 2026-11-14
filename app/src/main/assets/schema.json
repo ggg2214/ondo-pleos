@@ -1,0 +1,48 @@
+{
+  "packageName": "io.ondo.pleos",
+  "appDescription": "Reports highway incidents hands-free with precise kilometer milepost coordinates and alerts approaching vehicles to prevent secondary collisions.",
+  "version": "1.1.0",
+  "actionCalls": [
+    {
+      "type": "function",
+      "function": {
+        "component": "activity",
+        "name": "REPORT_HIGHWAY_INCIDENT",
+        "description": "Captures the current highway kilometer milepost immediately and submits a hands-free incident report.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "lane_number": {
+              "type": "string",
+              "description": "Blocked highway lane identifier reported by the driver.",
+              "enum": ["1", "2", "3", "4", "shoulder"]
+            },
+            "incident_summary": {
+              "type": "string",
+              "description": "Short summary of the observed road hazard or collision."
+            }
+          },
+          "required": []
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "component": "activity",
+        "name": "CHECK_AHEAD_HAZARDS",
+        "description": "Displays verified secondary-collision hazard alerts ahead on the active highway route.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "lookahead_km": {
+              "type": "number",
+              "description": "Forward lookahead distance in kilometers along the current route."
+            }
+          },
+          "required": []
+        }
+      }
+    }
+  ]
+}

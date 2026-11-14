@@ -1,0 +1,178 @@
+openapi: 3.1.0
+info:
+  title: ON:DO Zero-GC V2X Highway Incident Relay API
+  version: 1.1.0
+  description: >
+    Mission-critical V2X incident ingestion, Vehicle SDK sensor cross-validation,
+    and directional highway corridor (0.1km ~ 3.0km upstream) SSE broadcast contract
+    for Pleos Connect IVI clients (`io.ondo.pleos`).
+servers:
+  - url: http://10.0.2.2:8080
+    description: Pleos Connect Emulator host bridge endpoint
+  - url: http://127.0.0.1:8080
+    description: Local V2X relay verification endpoint
+
+paths:
+  /healthz:
+    get:
+      summary: Relay engine liveness and active cluster telemetry
+      responses:
+        "200":
+          description: Healthy Zero-GC relay node
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  engine:
+                    type: string
+                    example: ondo-v2x-corridor-relay
+                  active_clusters:
+                    type: integer
+                    example: 2
+
+  /api/v1/incidents:
+    post:
+      summary: Submit t=0 milepost snapshot + hands-free STT + Vehicle SDK sensor telemetry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncidentSubmissionRequest"
+      responses:
+        "200":
+          description: Cross-validation score evaluated and upstream corridor broadcast triggered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IncidentSubmissionResponse"
+
+  /api/v1/alerts/sse:
+    get:
+      summary: Subscribe to directional upstream 0.1km~3.0km secondary-accident prevention alerts (SSE)
+      parameters:
+        - name: highway_name
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 경부선
+        - name: direction
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [UPBOUND, DOWNBOUND]
+        - name: current_km
+          in: query
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 340.2
+      responses:
+        "200":
+          description: Server-Sent Events stream (`text/event-stream`) delivering matched corridor hazards
+
+components:
+  schemas:
+    IncidentSubmissionRequest:
+      type: object
+      required:
+        - highway_name
+        - direction
+        - kilometer_mark
+        - latitude
+        - longitude
+        - bearing_deg
+        - blocked_lane
+        - incident_type
+        - raw_transcript
+        - sensor
+      properties:
+        highway_name:
+          type: string
+          example: 경부선
+        direction:
+          type: string
+          enum: [UPBOUND, DOWNBOUND]
+        kilometer_mark:
+          type: number
+          format: double
+          example: 342.5
+        latitude:
+          type: number
+          format: double
+          example: 36.9921
+        longitude:
+          type: number
+          format: double
+          example: 127.1478
+        bearing_deg:
+          type: number
+          format: float
+          example: 168.0
+        blocked_lane:
+          type: string
+          example: 2차로
+        incident_type:
+          type: string
+          example: 화물차 전복
+        raw_transcript:
+          type: string
+          example: 2차로 화물차 전복, 파편 주의
+        sensor:
+          type: object
+          required:
+            - speed_kmh
+            - deceleration_mps2
+            - is_hazard_lamp_on
+            - ambient_temp_celsius
+            - is_wiper_active
+          properties:
+            speed_kmh:
+              type: integer
+              example: 78
+            deceleration_mps2:
+              type: number
+              format: float
+              example: -3.4
+            is_hazard_lamp_on:
+              type: boolean
+              example: true
+            ambient_temp_celsius:
+              type: number
+              format: float
+              example: 2.5
+            is_wiper_active:
+              type: boolean
+              example: false
+
+    IncidentSubmissionResponse:
+      type: object
+      properties:
+        cluster_id:
+          type: string
+          example: 경부선-DOWNBOUND-342.5
+        confidence_score:
+          type: integer
+          example: 98
+        verified:
+          type: boolean
+          example: true
+        corroborating_vehicles:
+          type: integer
+          example: 2
+        dispatched_to_korea_expressway:
+          type: boolean
+          example: true
+        notified_rear_subscribers:
+          type: integer
+          example: 38
+        processing_latency_micros:
+          type: integer
+          example: 36

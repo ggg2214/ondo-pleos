@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ON:DO (온도) — Pleos Connect v1.1.0 Official Display Prototype</title>
+  <meta name="description" content="도로 위에 켜지는 사람의 따뜻한 체온, ON:DO — 현대자동차그룹 Pleos Connect 공식 디자인 시스템(Asta Sans, #1D1E21) 및 5대 SDK 연동 고속도로 세이프티 넷" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="stage-wrapper">
+    <h1 class="sr-only">ON:DO Pleos Connect 공식 디스플레이 가이드 기반 IVI 프로토타입 (v1.1.0)</h1>
+
+    <!-- 16:9 Wide Pleos Connect IVI System Frame -->
+    <section class="ivi-screen" id="iviScreen" aria-label="Pleos Connect 차량용 인포테인먼트 디스플레이">
+
+      <!-- 1. Pleos OS System Status Bar (ivi_statusbar) -->
+      <header class="pleos-statusbar">
+        <div class="status-left">
+          <div class="gleo-pill" id="gleoPill">
+            <span class="gleo-star">✦</span>
+            <span id="gleoStatusText">Gleo AI · Schema Ready</span>
+          </div>
+          <span class="os-version-label">Pleos Connect OS · v1.1.0</span>
+          <span class="mic-privacy-chip" id="micPrivacyChip" aria-live="polite">
+            <span class="mic-dot"></span> MIC 수신 중
+          </span>
+        </div>
+
+        <div class="status-right">
+          <div class="sdk-indicators" aria-label="Pleos Connect 5대 SDK 바인딩 상태">
+            <span class="sdk-chip active" id="sdkVeh">Vehicle 2.3.2</span>
+            <span class="sdk-chip active" id="sdkLoc">FusedLocation 1.1.3</span>
+            <span class="sdk-chip active" id="sdkNavi">NaviHelper 3.0.5</span>
+            <span class="sdk-chip" id="sdkStt">STT 3.3.1</span>
+            <span class="sdk-chip" id="sdkTts">TTS 3.3.1</span>
+          </div>
+          <span class="os-net-badge">5G · V2X</span>
+          <span class="status-clock" id="clockText">22:15</span>
+        </div>
+      </header>
+
+      <!-- 2. Pleos Connect Multi-Pane Workspace: [OS Driving View] + [1:1 Split App Area] -->
+      <div class="ivi-main" id="iviMain">
+
+        <!-- Pane A: OS-Managed Driving View (Cluster / Speedometer / Gear / ADAS) -->
+        <aside class="os-driving-view" aria-label="Pleos OS 주행 클러스터 영역">
+          <div class="os-drive-top">
+            <div class="gear-selector" role="group" aria-label="변속 기어 상태">
+              <span class="gear-item" id="gearP">P</span>
+              <span class="gear-item" id="gearR">R</span>
+              <span class="gear-item" id="gearN">N</span>
+              <span class="gear-item active" id="gearD">D</span>
+            </div>
+            <button type="button" class="hazard-btn" id="hazardBtn" title="비상경고등 시그널 토글">
+              <span class="hazard-tri">▲</span>
+              <span id="osHazardText">비상등 대기</span>
+            </button>
+          </div>
+
+          <div class="os-speed-hero">
+            <div class="os-speed-value" id="speedValue">102</div>
+            <div class="os-speed-unit">km/h</div>
+            <div class="os-adas-pill" id="adasPill">
+              <span class="adas-dot"></span>
+              <span id="adasText">HDA2 고속도로 주행 보조 · 3차로</span>
+            </div>
+          </div>
+
+          <div class="os-lane-visualizer" aria-label="실시간 차로 포지션">
+            <div class="lane-viz-header">
+              <span id="laneVizTitle">주행 차로 가이드</span>
+              <span id="egoLaneLabel">3차로 주행 중</span>
+            </div>
+            <div class="lane-slots">
+              <span class="lane-slot" id="laneSlot1">1차로</span>
+              <span class="lane-slot" id="laneSlot2">2차로</span>
+              <span class="lane-slot active" id="laneSlot3">3차로</span>
+              <span class="lane-slot" id="laneSlot4">4차로</span>
+            </div>
+          </div>
+
+          <div class="os-system-meta">
+            <div class="sys-meta-row">
+              <span class="sys-meta-key">AudioFocus</span>
+              <span class="sys-meta-val" id="audioFocusLabel">STANDBY (180ms Pre-roll)</span>
+            </div>
+            <div class="sys-meta-row">
+              <span class="sys-meta-key">Lifecycle</span>
+              <span class="sys-meta-val" id="lifecycleLabel">Active · Suspend Safe</span>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Pane B: Application Area — Built-in Pleos Navigation (Left 1:1 Portrait Window) -->
+        <section class="pleos-navi-window" id="naviWindow" aria-label="Pleos 빌트인 내비게이션 윈도우">
+          <canvas id="highwayCanvas"></canvas>
+
+          <!-- Top NaviHelper Guidance Banner -->
+          <div class="navi-guidance-bar" id="naviBar">
+            <div class="navi-route-info">
+              <span class="route-shield" id="routeShield">경부 1</span>
+              <div class="route-copy">
+                <div class="route-title" id="routeTitle">경부고속도로 하행 (부산·대전 방면)</div>
+                <div class="route-sub" id="routeSub">NaviHelper 경로 연동 · 전방 안전 모니터링 중</div>
+              </div>
+            </div>
+            <span class="role-indicator" id="roleIndicator">선행 목격 차량</span>
+          </div>
+
+          <!-- Video Stage Guide Pill (Bottom-anchored cleanly outside road lanes or subtle HUD) -->
+          <div class="navi-hud-footer">
+            <div class="gps-corridor-chip">
+              <span class="gps-dot"></span>
+              <span id="naviFooterCoord">FusedLocation · 경부선 하행 342.33km (방위각 168°)</span>
+            </div>
+            <div class="snapshot-lock-chip" id="snapshotBadge">
+              <span id="snapshotText">t=0 고정: 342.5km</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Official Pleos Window Split Divider Bar (ivi_window_bar) -->
+        <div class="pleos-window-bar" id="windowDivider" title="창 비율 전환 (1:1 분할 / 2:0 전체화면)">
+          <span class="window-bar-handle"></span>
+        </div>
+
+        <!-- Pane C: ON:DO (온도) Official Pleos Application Window (#1D1E21 / #F7F8FA) -->
+        <section class="ondo-app-window" id="ondoWindow" aria-label="ON:DO Pleos 애플리케이션 윈도우">
+
+          <!-- 1) Pleos Page Header (ivi_header) -->
+          <header class="ondo-page-header">
+            <div class="ondo-brand-group">
+              <!-- Official 144dp/90dp Safe-Zone Adaptive App Icon (Hyundai 26% Squircle) -->
+              <div class="ondo-adaptive-icon" aria-hidden="true">
+                <div class="icon-warm-ring">
+                  <span class="icon-core-dot"></span>
+                </div>
+                <span class="icon-v2x-node"></span>
+              </div>
+              <div class="ondo-title-stack">
+                <div class="ondo-title-row">
+                  <span class="ondo-app-name">ON:DO</span>
+                  <span class="ondo-temp-tag">36.5°C</span>
+                </div>
+                <div class="ondo-milepost-sub" id="liveMilepost">경부선 하행 342.33km</div>
+              </div>
+            </div>
+
+            <div class="ondo-header-badges">
+              <span class="ux-do-badge restricted" id="uxRestrictionBadge">주행안전 DO</span>
+              <button type="button" class="window-policy-badge" id="windowModeBtn" title="1:1 Portrait / 2:0 Landscape 전환">
+                1:1 Portrait
+              </button>
+              <button type="button" class="theme-toggle-btn" id="themeToggleBtn" title="다크/라이트 테마 전환">
+                야간
+              </button>
+            </div>
+          </header>
+
+          <!-- 2) Primary Glanceable Stage Card (<= 3 lines copy per Pleos UX Guideline) -->
+          <article class="ondo-primary-card" id="ondoPrimaryCard" role="status" aria-live="polite">
+            <div class="card-top-group">
+              <div class="ondo-status-pill" id="ondoStatusPill">
+                <span class="status-pill-dot" id="ondoStatusDot"></span>
+                <span id="ondoStatusLabel">전방 고속도로 안전 모니터링</span>
+              </div>
+
+              <h2 class="ondo-stage-headline" id="ondoHeadline">
+                도로 위 위험 목격 시 원터치로 즉시 제보하세요
+              </h2>
+
+              <p class="ondo-stage-desc" id="ondoDesc">
+                터치 즉시 현재 이정(km)이 t=0으로 고정되며 3초 핸즈프리 음성 제보로 연결됩니다.
+              </p>
+            </div>
+
+            <!-- Center Glanceable Visual Telemetry Widget -->
+            <div class="card-visual-slot" id="ondoVisualSlot"></div>
+
+            <!-- Dynamic Stage Action / Detail Area -->
+            <div class="card-bottom-slot" id="ondoBottomSlot">
+              <button type="button" class="pleos-large-cta" id="oneTouchBtn">
+                <span class="cta-ring-badge">ON</span>
+                <span>도로 위 사고 원터치 제보 (t=0 이정 고정)</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- 3) V2X Solidarity & Vehicle SDK Sensor Fusion Card (Zero duplicate speedometer!) -->
+          <section class="ondo-v2x-card" aria-label="V2X 연결 및 차량 센서 교차 검증 상태">
+            <div class="v2x-left">
+              <span class="v2x-caption">반경 3km V2X 안전 연대</span>
+              <strong class="v2x-count">Pleos 차량 <span id="connectedCarsCount">38</span>대 연결 중</strong>
+            </div>
+            <div class="v2x-signal-chips">
+              <span class="signal-chip" id="sensorHazard">비상등 대기</span>
+              <span class="signal-chip" id="sensorDecel">-0.2 m/s²</span>
+              <span class="signal-chip ice-warn" id="sensorTemp">외기 2.5°C</span>
+            </div>
+          </section>
+
+          <!-- 4) Pleos Basic Small Scenario Step Buttons -->
+          <nav class="ondo-step-grid" aria-label="ON:DO 시나리오 단계">
+            <button type="button" class="pleos-step-btn active" data-scene-btn="driving">1. 주행 대기</button>
+            <button type="button" class="pleos-step-btn" data-scene-btn="stt_snapshot">2. 원터치 음성제보</button>
+            <button type="button" class="pleos-step-btn" data-scene-btn="cross_verified">3. 센서 교차검증</button>
+            <button type="button" class="pleos-step-btn" data-scene-btn="rear_alert">4. 후방 경보</button>
+            <button type="button" class="pleos-step-btn" data-scene-btn="arrival_summary">5. P단 리포트</button>
+          </nav>
+        </section>
+      </div>
+
+      <!-- 3. Pleos OS Bottom Global Navigation Bar (ivi_gnb/horizontal) -->
+      <footer class="pleos-gnb">
+        <div class="gnb-climate">
+          <span class="climate-zone">운전석</span>
+          <strong class="climate-temp">21.5°C</strong>
+        </div>
+
+        <div class="gnb-dock">
+          <span class="gnb-dock-item">⊞ 앱 라이브러리</span>
+          <span class="gnb-dock-item">내비게이션</span>
+          <span class="gnb-dock-item active">
+            <span class="dock-active-dot"></span> ON:DO (온도)
+          </span>
+          <span class="gnb-dock-item">미디어</span>
+          <span class="gnb-dock-item">차량 설정</span>
+        </div>
+
+        <div class="gnb-right">
+          <span class="gnb-slogan">누군가의 삶을 지켜온 온도가 과거에서 현재로, 미래까지 이어질 수 있도록</span>
+          <div class="gnb-climate">
+            <span class="climate-zone">동승석</span>
+            <strong class="climate-temp">22.0°C</strong>
+          </div>
+        </div>
+      </footer>
+    </section>
+
+    <!-- External Director Bar for Interactive Browser Preview (Hidden automatically in Clean Video Capture) -->
+    <nav class="director-bar" aria-label="시연 녹화 컨트롤러">
+      <div class="director-steps">
+        <button type="button" class="dir-btn autoplay" id="autoPlayBtn">▶ 전체 시연 자동재생 (A)</button>
+        <button type="button" class="dir-btn" id="muteBtn">음성 안내 ON</button>
+        <button type="button" class="dir-btn" id="cleanToggleBtn">클린 녹화모드 (H)</button>
+      </div>
+      <span class="director-hint">단축키: 1~5 장면전환 · Space 원터치 제보 · W 창크기(1:1/2:0) · T 주/야간 테마 · H 컨트롤바 숨김</span>
+    </nav>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>

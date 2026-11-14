@@ -1,0 +1,10 @@
+# Copy this file to local.properties (gitignored) to bind real Pleos Playground Console credentials.
+# Standard Pleos Connect Emulator runs out-of-the-box without requiring console secrets.
+
+sdk.dir=/path/to/Android/Sdk
+PLEOS_PROJECT_ID=YOUR_PLEOS_PROJECT_ID
+PLEOS_CLIENT_ID=YOUR_PLEOS_CLIENT_ID
+PLEOS_CLIENT_SECRET=YOUR_PLEOS_CLIENT_SECRET
+PLEOS_DEVBOX_CRN=did:cac:42dot:system:devbox::00000000-0000-0000-0000-000000000000
+PLEOS_SDK_SCOPES=vehicle.state,navi.helper
+PLEOS_RELAY_BASE_URL=http://10.0.2.2:8080

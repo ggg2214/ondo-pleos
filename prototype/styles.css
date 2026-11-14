@@ -1,0 +1,1456 @@
+@font-face {
+  font-family: "Asta Sans";
+  src: url("./fonts/AstaSans-VariableFont_wght.ttf") format("truetype");
+  font-weight: 300 800;
+  font-style: normal;
+  font-display: block;
+}
+
+:root {
+  /* Pleos Connect OS System Shell */
+  --bg-cockpit: #07080a;
+  --os-shell-bg: #0b0d10;
+  --os-panel-bg: #0e1013;
+  --os-bar-bg: #0d0f13;
+  --os-border: rgba(255, 255, 255, 0.08);
+  --os-border-strong: rgba(255, 255, 255, 0.14);
+
+  /* Pleos Connect Official Dark Application Window Tokens (Figma 215) */
+  --app-window-bg: #1d1e21;
+  --app-card-bg: #252525;
+  --app-inset-bg: #131417;
+  --app-control-bg: #313236;
+  --app-divider: rgba(255, 255, 255, 0.10);
+  --app-text-primary: #ffffff;
+  --app-text-secondary: #b4bcc8;
+  --app-text-muted: #7b8494;
+
+  /* Semantic & Brand Accent Tokens */
+  --pleos-active: #00e074;
+  --pleos-active-soft: rgba(0, 224, 116, 0.15);
+  --pleos-error: #f62e24;
+  --pleos-error-soft: rgba(246, 46, 36, 0.16);
+  --pleos-blue: #0082ff;
+  --pleos-blue-soft: rgba(0, 130, 255, 0.16);
+  --ondo-warm: #ff6b2c;
+  --ondo-warm-soft: rgba(255, 107, 44, 0.16);
+
+  --font-sans: "Asta Sans", -apple-system, BlinkMacSystemFont, "Noto Sans KR", sans-serif;
+  --font-mono: "Asta Sans", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Official Light Theme Override (#F7F8FA) for ON:DO Application Window */
+.ondo-app-window.light-theme {
+  --app-window-bg: #f7f8fa;
+  --app-card-bg: #ffffff;
+  --app-inset-bg: #edeef2;
+  --app-control-bg: #e0e1e6;
+  --app-divider: #dde1eb;
+  --app-text-primary: #131417;
+  --app-text-secondary: #4c5563;
+  --app-text-muted: #687385;
+  --pleos-active: #02c265;
+  --pleos-active-soft: rgba(2, 194, 101, 0.13);
+  --pleos-blue: #0064ff;
+  --pleos-blue-soft: rgba(0, 100, 255, 0.12);
+  --ondo-warm: #e85515;
+  --ondo-warm-soft: rgba(232, 85, 21, 0.13);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-cockpit);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.stage-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  gap: 10px;
+}
+
+body.clean-capture .stage-wrapper {
+  padding: 0;
+  gap: 0;
+}
+
+/* 16:9 Wide Pleos Connect IVI System Frame */
+.ivi-screen {
+  width: min(100%, calc((100vh - 76px) * (16 / 9)));
+  aspect-ratio: 16 / 9;
+  background: var(--os-shell-bg);
+  border-radius: 22px;
+  border: 1px solid var(--os-border-strong);
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.78);
+  display: grid;
+  grid-template-rows: 50px 1fr 56px;
+  overflow: hidden;
+  position: relative;
+}
+
+body.clean-capture .ivi-screen {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+/* =========================================================
+   1. Top Pleos OS Status Bar (ivi_statusbar)
+   ========================================================= */
+.pleos-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  background: var(--os-bar-bg);
+  border-bottom: 1px solid var(--os-border);
+  font-size: 13px;
+}
+
+.status-left,
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gleo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #1a1d24;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  font-weight: 700;
+  color: #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.gleo-pill.listening {
+  background: rgba(255, 107, 44, 0.18);
+  border-color: #ff6b2c;
+  color: #ffffff;
+}
+
+.gleo-star {
+  color: #0082ff;
+  font-size: 14px;
+}
+
+.gleo-pill.listening .gleo-star {
+  color: #ff6b2c;
+}
+
+.os-version-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #8e96a4;
+}
+
+.mic-privacy-chip {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(0, 224, 116, 0.16);
+  border: 1px solid rgba(0, 224, 116, 0.5);
+  color: #00e074;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.mic-privacy-chip.visible {
+  display: inline-flex;
+}
+
+.mic-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00e074;
+}
+
+.sdk-indicators {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sdk-chip {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #6c7483;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.2s ease;
+}
+
+.sdk-chip.active {
+  color: #00e074;
+  background: rgba(0, 224, 116, 0.13);
+  border-color: rgba(0, 224, 116, 0.42);
+}
+
+.os-net-badge {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.status-clock {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   2. Main Multi-Pane Workspace
+      Default 1:1 Split: [OS Driving View 360px] [Navi 732px] [Bar 20px] [ON:DO 764px]
+      Landscape 2:0 Mode: [OS Driving View 360px] [ON:DO Full Landscape 1516px]
+   ========================================================= */
+.ivi-main {
+  display: grid;
+  grid-template-columns: 356px minmax(0, 1fr) 20px minmax(0, 1.04fr);
+  padding: 12px 16px;
+  gap: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ivi-main.landscape-20 {
+  grid-template-columns: 356px 0px 0px minmax(0, 1fr);
+}
+
+.ivi-main.landscape-20 .pleos-navi-window,
+.ivi-main.landscape-20 .pleos-window-bar {
+  display: none;
+}
+
+.ivi-main.landscape-20 .ondo-app-window {
+  margin-left: 14px;
+}
+
+/* ---------------------------------------------------------
+   Pane A: Pleos OS Driving View (Left System Cluster)
+   --------------------------------------------------------- */
+.os-driving-view {
+  background: var(--os-panel-bg);
+  border: 1px solid var(--os-border);
+  border-radius: 24px;
+  padding: 20px;
+  margin-right: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.os-drive-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gear-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #161920;
+  padding: 4px 6px;
+  border-radius: 14px;
+  border: 1px solid var(--os-border);
+}
+
+.gear-item {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #5b6372;
+  transition: all 0.2s ease;
+}
+
+.gear-item.active {
+  background: #0082ff;
+  color: #ffffff;
+}
+
+#gearP.active {
+  background: #ff6b2c;
+  color: #ffffff;
+}
+
+.hazard-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 13px;
+  border: 1px solid var(--os-border);
+  background: #161920;
+  color: #94a3b8;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hazard-btn.blinking {
+  background: rgba(246, 46, 36, 0.22);
+  border-color: #f62e24;
+  color: #ff8a84;
+}
+
+.hazard-tri {
+  color: #f62e24;
+  font-size: 12px;
+}
+
+.os-speed-hero {
+  text-align: center;
+  padding: 22px 12px;
+  background: radial-gradient(circle at 50% 35%, rgba(0, 130, 255, 0.12), rgba(19, 20, 23, 0.5) 72%);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.os-speed-value {
+  font-size: 92px;
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.os-speed-unit {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #8e96a4;
+  letter-spacing: 0.04em;
+}
+
+.os-adas-pill {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(0, 224, 116, 0.12);
+  border: 1px solid rgba(0, 224, 116, 0.35);
+  color: #00e074;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.os-adas-pill.warn {
+  background: rgba(255, 107, 44, 0.16);
+  border-color: rgba(255, 107, 44, 0.48);
+  color: #ff9c73;
+}
+
+.adas-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.os-lane-visualizer {
+  background: #14171d;
+  border: 1px solid var(--os-border);
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+
+.lane-viz-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+
+#egoLaneLabel {
+  color: #ffffff;
+}
+
+.lane-slots {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.lane-slot {
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: 10px;
+  background: #0d1015;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+  transition: all 0.2s ease;
+}
+
+.lane-slot.active {
+  background: rgba(0, 130, 255, 0.22);
+  border-color: #0082ff;
+  color: #ffffff;
+}
+
+.lane-slot.blocked {
+  background: rgba(246, 46, 36, 0.22);
+  border-color: #f62e24;
+  color: #ff8a84;
+}
+
+.os-system-meta {
+  background: #14171d;
+  border: 1px solid var(--os-border);
+  border-radius: 18px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sys-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+}
+
+.sys-meta-key {
+  color: #7c8596;
+  font-weight: 600;
+}
+
+.sys-meta-val {
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
+.sys-meta-val.ducking {
+  color: #ff9c73;
+}
+
+/* ---------------------------------------------------------
+   Pane B: Pleos Built-in Navigation Window (1:1 Left Split)
+   --------------------------------------------------------- */
+.pleos-navi-window {
+  position: relative;
+  background: #080c13;
+  border-radius: 24px;
+  border: 1px solid var(--os-border);
+  overflow: hidden;
+  min-width: 0;
+}
+
+#highwayCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.navi-guidance-bar {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(15, 20, 28, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 5;
+}
+
+.navi-guidance-bar.alert-mode {
+  background: rgba(70, 14, 14, 0.94);
+  border-color: #f62e24;
+}
+
+.navi-route-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.route-shield {
+  flex-shrink: 0;
+  padding: 6px 11px;
+  border-radius: 10px;
+  background: #0064ff;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.navi-guidance-bar.alert-mode .route-shield {
+  background: #f62e24;
+}
+
+.route-copy {
+  min-width: 0;
+}
+
+.route-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.route-sub {
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #b4bcc8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.role-indicator {
+  flex-shrink: 0;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.navi-hud-footer {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.gps-corridor-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(13, 17, 24, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.gps-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00e074;
+}
+
+.snapshot-lock-chip {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 107, 44, 0.92);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 6px 18px rgba(255, 107, 44, 0.4);
+}
+
+.snapshot-lock-chip.visible {
+  display: inline-flex;
+}
+
+/* ---------------------------------------------------------
+   Official Pleos Window Divider Bar (ivi_window_bar)
+   --------------------------------------------------------- */
+.pleos-window-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: col-resize;
+}
+
+.window-bar-handle {
+  width: 4px;
+  height: 54px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.24);
+  transition: background 0.2s ease;
+}
+
+.pleos-window-bar:hover .window-bar-handle {
+  background: #ff6b2c;
+}
+
+/* ---------------------------------------------------------
+   Pane C: ON:DO (온도) Application Window (#1D1E21 / #F7F8FA)
+   100% Parity with OndoIviScreen.kt (v1.1.0)
+   --------------------------------------------------------- */
+.ondo-app-window {
+  background: var(--app-window-bg);
+  color: var(--app-text-primary);
+  border-radius: 24px;
+  border: 1px solid var(--app-divider);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* 1) Pleos Page Header */
+.ondo-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ondo-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+/* 144dp / 90dp Safe-Zone Adaptive App Icon (Hyundai 26% Squircle) */
+.ondo-adaptive-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 26%;
+  background: var(--app-inset-bg);
+  border: 1px solid var(--app-divider);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-warm-ring {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3.5px solid var(--ondo-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-core-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ondo-warm);
+}
+
+.icon-v2x-node {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pleos-active);
+}
+
+.ondo-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ondo-app-name {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--app-text-primary);
+}
+
+.ondo-temp-tag {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ondo-warm);
+}
+
+.ondo-milepost-sub {
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--app-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ondo-header-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ux-do-badge {
+  padding: 8px 13px;
+  border-radius: 13px;
+  background: var(--app-inset-bg);
+  border: 1px solid var(--app-divider);
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--app-text-secondary);
+}
+
+.ux-do-badge.restricted {
+  border-color: rgba(0, 224, 116, 0.45);
+  color: var(--pleos-active);
+}
+
+.window-policy-badge,
+.theme-toggle-btn {
+  padding: 8px 13px;
+  border-radius: 13px;
+  border: 1px solid var(--app-divider);
+  background: var(--app-card-bg);
+  color: var(--app-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.theme-toggle-btn {
+  background: var(--app-control-bg);
+  color: var(--app-text-primary);
+}
+
+/* 2) Primary Glanceable Stage Card */
+.ondo-primary-card {
+  flex: 1;
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-divider);
+  border-radius: 28px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 0;
+}
+
+.ondo-primary-card.alert-border {
+  border-color: rgba(246, 46, 36, 0.65);
+}
+
+.card-top-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.ondo-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--app-inset-bg);
+  border: 1px solid var(--app-divider);
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--app-text-primary);
+}
+
+.status-pill-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pleos-active);
+}
+
+.ondo-stage-headline {
+  font-size: 29px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+  color: var(--app-text-primary);
+}
+
+.ondo-stage-desc {
+  font-size: 17.5px;
+  font-weight: 500;
+  line-height: 1.48;
+  color: var(--app-text-secondary);
+}
+
+.ondo-stage-desc.highlight-green {
+  color: var(--pleos-active);
+  font-weight: 700;
+}
+
+.ondo-stage-desc.highlight-warm {
+  color: var(--ondo-warm);
+  font-weight: 700;
+}
+
+.card-visual-slot {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+}
+
+.visual-pipeline-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.vp-step {
+  background: var(--app-inset-bg);
+  border: 1px solid var(--app-divider);
+  border-radius: 20px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vp-num {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ondo-warm);
+  letter-spacing: 0.03em;
+}
+
+.vp-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--app-text-primary);
+}
+
+.vp-sub {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--app-text-secondary);
+}
+
+.visual-lock-compare {
+  width: 100%;
+  background: var(--app-inset-bg);
+  border: 1px solid var(--app-divider);
+  border-radius: 22px;
+  padding: 20px 22px;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.vlc-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vlc-box.right {
+  padding-left: 16px;
+  border-left: 1px solid var(--app-divider);
+}
+
+.vlc-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--app-text-secondary);
+}
+
+.vlc-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ondo-warm);
+  font-variant-numeric: tabular-nums;
+}
+
+.vlc-val.secondary {
+  font-size: 22px;
+  color: var(--app-text-primary);
+}
+
+.vlc-note {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pleos-active);
+}
+
+.visual-lane-guide {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.vlg-lane {
+  background: var(--app-inset-bg);
+  border: 1.5px solid var(--app-divider);
+  border-radius: 20px;
+  padding: 18px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.vlg-lane.danger {
+  background: var(--pleos-error-soft);
+  border-color: var(--pleos-error);
+}
+
+.vlg-lane.recommend {
+  background: var(--pleos-active-soft);
+  border-color: var(--pleos-active);
+}
+
+.vlg-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--app-text-secondary);
+}
+
+.vlg-icon {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--app-text-primary);
+}
+
+.vlg-lane.danger .vlg-icon,
+.vlg-lane.danger .vlg-status {
+  color: var(--pleos-error);
+}
+
+.vlg-lane.recommend .vlg-icon,
+.vlg-lane.recommend .vlg-status {
+  color: var(--pleos-active);
+}
+
+.vlg-status {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--app-text-secondary);
+}
+
+.visual-impact-stats {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.vis-stat {
+  background: var(--app-inset-bg);
+  border: 1px solid var(--app-divider);
+  border-radius: 20px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vis-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--app-text-secondary);
+}
+
+.vis-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--app-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.vis-num.warm {
+  color: var(--ondo-warm);
+}
+
+.vis-num.green {
+  color: var(--pleos-active);
+}
+
+.card-bottom-slot {
+  width: 100%;
+}
+
+/* Pleos Buttons > Basic Large (80dp height, 24dp radius) */
+.pleos-large-cta {
+  width: 100%;
+  height: 82px;
+  border-radius: 24px;
+  border: none;
+  background: var(--ondo-warm);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(255, 107, 44, 0.32);
+  transition: transform 0.15s ease;
+}
+
+.pleos-large-cta:active {
+  transform: scale(0.985);
+}
+
+.cta-ring-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Stage 2: Hands-Free STT Voice Box */
+.pleos-stt-surface {
+  background: var(--app-inset-bg);
+  border: 1.5px solid var(--ondo-warm);
+  border-radius: 22px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stt-live-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.stt-transcript-text {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--app-text-primary);
+  letter-spacing: -0.015em;
+}
+
+.stt-waveform {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+}
+
+.stt-wave-bar {
+  width: 4px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--ondo-warm);
+  animation: waveBounce 0.75s ease-in-out infinite alternate;
+}
+
+.stt-wave-bar:nth-child(2) { animation-delay: 0.12s; }
+.stt-wave-bar:nth-child(3) { animation-delay: 0.24s; }
+.stt-wave-bar:nth-child(4) { animation-delay: 0.36s; }
+.stt-wave-bar:nth-child(5) { animation-delay: 0.48s; }
+
+@keyframes waveBounce {
+  from { height: 7px; }
+  to { height: 26px; }
+}
+
+.nlu-slot-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nlu-chip {
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-divider);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--app-text-secondary);
+}
+
+.nlu-chip.gleo {
+  color: var(--ondo-warm);
+  border-color: rgba(255, 107, 44, 0.4);
+}
+
+/* Stage 3: Cross-Validation Surface */
+.pleos-verify-surface {
+  background: var(--app-inset-bg);
+  border: 1px solid rgba(0, 224, 116, 0.4);
+  border-radius: 22px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.verify-check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--app-text-primary);
+}
+
+.verify-check-mark {
+  color: var(--pleos-active);
+  margin-right: 8px;
+}
+
+.verify-check-tag {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pleos-active);
+}
+
+/* Stage 4: Rear Approaching Alert Surface */
+.pleos-alert-surface {
+  background: var(--pleos-error-soft);
+  border: 1.5px solid var(--pleos-error);
+  border-radius: 22px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.alert-tts-text {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: var(--app-text-primary);
+}
+
+.alert-preroll-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--pleos-error);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Stage 5: 36.5°C Arrival Warmth Surface */
+.pleos-warmth-surface {
+  background: var(--pleos-active-soft);
+  border: 1.5px solid var(--pleos-active);
+  border-radius: 22px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.warmth-reward-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--pleos-active);
+}
+
+.warmth-reward-sub {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--app-text-secondary);
+}
+
+.warmth-temp-hero {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--ondo-warm);
+  letter-spacing: -0.03em;
+  flex-shrink: 0;
+}
+
+/* 3) V2X Solidarity & Sensor Fusion Card */
+.ondo-v2x-card {
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-divider);
+  border-radius: 22px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.v2x-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.v2x-caption {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--app-text-secondary);
+}
+
+.v2x-count {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--app-text-primary);
+}
+
+.v2x-signal-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.signal-chip {
+  padding: 8px 13px;
+  border-radius: 12px;
+  background: var(--app-inset-bg);
+  border: 1px solid var(--app-divider);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--app-text-secondary);
+}
+
+.signal-chip.warn {
+  background: var(--pleos-error-soft);
+  border-color: var(--pleos-error);
+  color: var(--pleos-error);
+}
+
+.signal-chip.ice-warn {
+  background: var(--pleos-blue-soft);
+  border-color: var(--pleos-blue);
+  color: var(--pleos-blue);
+}
+
+/* 4) Pleos Basic Small Scenario Step Buttons */
+.ondo-step-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.pleos-step-btn {
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: var(--app-control-bg);
+  color: var(--app-text-primary);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
+  transition: all 0.15s ease;
+}
+
+.pleos-step-btn.active {
+  background: var(--ondo-warm);
+  color: #ffffff;
+}
+
+/* =========================================================
+   3. Bottom Pleos OS Global Navigation Bar (ivi_gnb)
+   ========================================================= */
+.pleos-gnb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--os-bar-bg);
+  border-top: 1px solid var(--os-border);
+}
+
+.gnb-climate {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.climate-zone {
+  font-size: 13px;
+  font-weight: 600;
+  color: #8e96a4;
+}
+
+.climate-temp {
+  font-size: 19px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.gnb-dock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gnb-dock-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 13px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #8e96a4;
+}
+
+.gnb-dock-item.active {
+  background: #252525;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.dock-active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff6b2c;
+}
+
+.gnb-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.gnb-slogan {
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+/* =========================================================
+   External Interactive Director Bar
+   ========================================================= */
+.director-bar {
+  width: min(100%, calc((100vh - 76px) * (16 / 9)));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: #12151c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.clean-capture .director-bar {
+  display: none !important;
+}
+
+.director-steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dir-btn {
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #1d222d;
+  color: #e2e8f0;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dir-btn.autoplay {
+  background: #ff6b2c;
+  border-color: #ff6b2c;
+  color: #ffffff;
+}
+
+.director-hint {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #8e96a4;
+}
