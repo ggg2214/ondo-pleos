@@ -9,7 +9,7 @@
   - Debug APK (개발 검증본): [`apk/ondo-pleos-debug.apk`](./apk/ondo-pleos-debug.apk)
 - **시연 영상 위치 (`1920×1080`, `16:9`, `30fps`):**
   - Pleos Connect v1.1.0 앱 실행 본편 (45초): [`demo/ondo-pleos-ivi-demo.mp4`](./demo/ondo-pleos-ivi-demo.mp4)
-  - 브랜드 서사 + 앱 실행 통합 필름 (90초): [`demo/ondo-full-90s-film.mp4`](./demo/ondo-full-90s-film.mp4)
+  - 브랜드 서사 + 앱 실행 통합 필름 (1분 25초 · 85초): [`demo/ondo-full-90s-film.mp4`](./demo/ondo-full-90s-film.mp4)
 
 ---
 
@@ -104,7 +104,7 @@ flowchart LR
 ├── api-spec/                             # [공개] 초저지연 V2X 사고 검증·코리더 중계 OpenAPI 3.1 명세서
 │   └── ondo-v2x-relay-openapi.yaml
 ├── prototype/                            # [공개] Pleos Connect v1.1.0 공식 레이아웃 웹 인터랙티브 시뮬레이터
-├── demo/                                 # [공개] 1920x1080 30fps 시연 영상 (45초 IVI 본편 / 90초 통합본)
+├── demo/                                 # [공개] 1920x1080 30fps 시연 영상 (45초 IVI 본편 / 1분 25초 통합본)
 └── private-workspace/                    # [비공개 Git Submodule] 자체 Rust V2X 서버 원본 및 내부 문서 보호 영역
 ```
 
